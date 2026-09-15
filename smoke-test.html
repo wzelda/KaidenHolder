@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>PENDING</title></head>
+<body>
+<iframe id="f" src="index.html" width="1200" height="900"></iframe>
+<pre id="out">running...</pre>
+<script>
+const results = [];
+function check(name, cond) { results.push((cond ? "PASS" : "FAIL") + " " + name); }
+
+window.onload = function () {
+  setTimeout(() => {
+    const w = document.getElementById("f").contentWindow;
+    const d = w.document;
+    const g = e => w.eval(e);
+    try {
+      /* 重置上次运行可能残留的 localStorage，保证断言可重复 */
+      g("localStorage.clear()");
+      g("Sound.init()");
+
+      check("LETTERS=26", g("LETTERS.length") === 26);
+      check("NUMBERS=20", g("NUMBERS.length") === 20);
+      check("COUNT_EMOJIS>=5", g("COUNT_EMOJIS.length") >= 5);
+
+      /* ABC */
+      w.showScreen("letters");
+      check("ABC-A", d.getElementById("letter-upper").textContent === "A");
+      check("ABC-word", d.getElementById("letter-word").textContent === "Apple");
+      d.getElementById("letter-next").click();
+      check("ABC-B", d.getElementById("letter-upper").textContent === "B");
+      d.getElementById("letter-prev").click();
+      d.getElementById("letter-prev").click();
+      check("ABC-wrap-Z", d.getElementById("letter-upper").textContent === "Z");
+
+      /* Numbers */
+      w.showScreen("numbers");
+      check("NUM-1", d.getElementById("number-big").textContent === "1");
+      check("NUM-name", d.getElementById("number-name").textContent === "One");
+      check("NUM-objects", d.getElementById("number-objects").textContent.length === 2);
+      d.getElementById("number-next").click();
+      check("NUM-2", d.getElementById("number-big").textContent === "2");
+
+      /* Find Letter — correct */
+      w.showScreen("find");
+      let target = d.getElementById("find-target").textContent;
+      let choices = [...d.querySelectorAll("#find-choices .choice")];
+      check("FIND-3choices", choices.length === 3);
+      let correctBtn = choices.find(b => b.textContent === target);
+      check("FIND-has-correct", !!correctBtn);
+      let before = g("FindGame.stars");
+      correctBtn.click();
+      correctBtn.click(); /* 连点不应重复加星 */
+      check("FIND-star-single", g("FindGame.stars") === before + 1);
+
+      setTimeout(() => {
+        try {
+          /* Find — wrong answer (no punishment) */
+          const t2 = d.getElementById("find-target").textContent;
+          const wrongBtn = [...d.querySelectorAll("#find-choices .choice")].find(b => b.textContent !== t2);
+          const s2 = g("FindGame.stars");
+          if (wrongBtn) wrongBtn.click();
+          check("FIND-wrong-no-star", g("FindGame.stars") === s2);
+
+          /* Count game — match same-color target pairs */
+          w.showScreen("count");
+          const countBtns = [...d.querySelectorAll("#count-choices .choice")];
+          check("COUNT-board-min9", countBtns.length >= 9);
+          const answer = g("CountGame.answer");
+          check("COUNT-answer-in-choices", countBtns.some(b => parseInt(b.textContent, 10) === answer));
+          const cs = g("CountGame.stars");
+          const firstTarget = countBtns.find(b => parseInt(b.textContent, 10) === answer);
+          firstTarget.click();
+          check("COUNT-one-click-no-star", g("CountGame.stars") === cs);
+          firstTarget.click(); /* 取消选中，再按对消除 */
+          function matchAllCountPairs() {
+            const need = g("CountGame.need");
+            for (let p = 0; p < need; p++) {
+              const live = [...d.querySelectorAll("#count-choices .choice")].filter(b =>
+                parseInt(b.textContent, 10) === g("CountGame.answer") && !b.classList.contains("gone")
+              );
+              const by = {};
+              live.forEach(b => {
+                const c = b.style.background;
+                (by[c] = by[c] || []).push(b);
+              });
+              const pair = Object.values(by).find(arr => arr.length >= 2);
+              pair[0].click();
+              pair[1].click();
+            }
+          }
+          matchAllCountPairs();
+          countBtns.forEach(b => b.click());
+          check("COUNT-star-single", g("CountGame.stars") === cs + 1);
+
+          /* Count — wrong answer */
+          const wrong2 = [...d.querySelectorAll("#count-choices .choice")].find(b => parseInt(b.textContent, 10) !== g("CountGame.answer") && !b.classList.contains("gone"));
+          const cs2 = g("CountGame.stars");
+          if (wrong2) wrong2.click();
+          check("COUNT-wrong-no-star", g("CountGame.stars") === cs2);
+
+          /* Home re-entry only shows once (no double init crash) */
+          w.showScreen("home");
+          w.showScreen("letters");
+          w.showScreen("home");
+          check("HOME-active", d.getElementById("screen-home").classList.contains("active"));
+
+          /* Sound toggle */
+          const snd = d.querySelector("#screen-home .sound-btn") || d.querySelector(".sound-btn");
+          if (snd) {
+            snd.click();
+            check("SOUND-off", g("Sound.enabled") === false);
+            snd.click();
+            check("SOUND-on", g("Sound.enabled") === true);
+          }
+          check("HOME-4buttons", d.querySelectorAll("#screen-home [data-nav]").length === 4);
+        } catch (e) { results.push("EXCEPTION2 " + e.message + " @" + e.stack); }
+        finish();
+      }, 1600);
+    } catch (e) { results.push("EXCEPTION1 " + e.message + " @" + e.stack); finish(); }
+
+    function finish() {
+      const out = document.getElementById("out");
+      out.textContent = results.join("\n");
+      document.title = results.some(r => r.startsWith("FAIL") || r.startsWith("EXCEPTION")) ? "FAILED" : "ALLPASSED";
+    }
+  }, 300);
+};
+</script>
+</body>
+</html>

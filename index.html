@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kids ABC &amp; 123</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ HOME ============ -->
+  <section id="screen-home" class="screen active">
+    <div class="home-bubbles" aria-hidden="true"></div>
+    <h1 class="home-title">🌈 Kids ABC &amp; 123 🌈</h1>
+    <p class="home-sub">Tap a button to play!</p>
+    <div class="home-menu">
+      <button class="big-btn btn-pink" data-nav="letters">🔤<span>ABC</span></button>
+      <button class="big-btn btn-blue" data-nav="numbers">🔢<span>123</span></button>
+      <button class="big-btn btn-green" data-nav="find">🔍<span>Find Letter</span></button>
+      <button class="big-btn btn-orange" data-nav="count">🍎<span>Counting</span></button>
+    </div>
+  </section>
+
+  <!-- ============ LETTERS ============ -->
+  <section id="screen-letters" class="screen">
+    <button class="home-btn" data-nav="home">🏠</button>
+    <button class="sound-btn" id="sound-toggle-letters" title="Sound on/off">🔊</button>
+    <h2 class="screen-title">ABC</h2>
+    <div class="letter-card" id="letter-card">
+      <div class="letter-big" id="letter-upper">A</div>
+      <div class="letter-small" id="letter-lower">a</div>
+      <div class="letter-emoji" id="letter-emoji">🍎</div>
+      <div class="letter-word" id="letter-word">Apple</div>
+    </div>
+    <div class="nav-row">
+      <button class="round-btn" id="letter-prev">⬅️</button>
+      <button class="round-btn speak-btn" id="letter-speak">🔈</button>
+      <button class="round-btn" id="letter-next">➡️</button>
+    </div>
+  </section>
+
+  <!-- ============ NUMBERS ============ -->
+  <section id="screen-numbers" class="screen">
+    <button class="home-btn" data-nav="home">🏠</button>
+    <button class="sound-btn" id="sound-toggle-numbers" title="Sound on/off">🔊</button>
+    <h2 class="screen-title">123</h2>
+    <div class="number-card" id="number-card">
+      <div class="number-big" id="number-big">1</div>
+      <div class="number-name" id="number-name">One</div>
+      <div class="number-objects" id="number-objects"></div>
+    </div>
+    <div class="nav-row">
+      <button class="round-btn" id="number-prev">⬅️</button>
+      <button class="round-btn speak-btn" id="number-speak">🔈</button>
+      <button class="round-btn" id="number-next">➡️</button>
+    </div>
+  </section>
+
+  <!-- ============ FIND LETTER ============ -->
+  <section id="screen-find" class="screen">
+    <button class="home-btn" data-nav="home">🏠</button>
+    <button class="sound-btn" id="sound-toggle-find" title="Sound on/off">🔊</button>
+    <h2 class="screen-title">Find the Letter!</h2>
+    <div class="find-target" id="find-target">A</div>
+    <div class="choices" id="find-choices"></div>
+    <div class="stars" id="find-stars">⭐ 0</div>
+  </section>
+
+  <!-- ============ COUNTING GAME ============ -->
+  <section id="screen-count" class="screen">
+    <button class="home-btn" data-nav="home">🏠</button>
+    <button class="sound-btn" id="sound-toggle-count" title="Sound on/off">🔊</button>
+    <h2 class="screen-title">How Many?</h2>
+    <p class="count-hint">Tap 2 same color!</p>
+    <div class="count-objects" id="count-objects"></div>
+    <div class="count-progress" id="count-progress">0 / 1</div>
+    <div class="choices count-grid" id="count-choices"></div>
+    <div class="stars" id="count-stars">⭐ 0</div>
+  </section>
+
+  <!-- celebration overlay -->
+  <div id="celebrate" class="celebrate hidden"></div>
+</div>
+
+<script src="js/data/letters.js"></script>
+<script src="js/data/numbers.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/games/abc.js"></script>
+<script src="js/games/number.js"></script>
+<script src="js/games/find.js"></script>
+<script src="js/games/count.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

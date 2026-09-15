@@ -1,0 +1,16 @@
+{
+  "name": "kaiden-holder",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Kids ABC & 123 儿童学习小游戏（纯前端，无构建）",
+  "scripts": {
+    "test": "node harness.test.js",
+    "lint": "eslint js",
+    "fmt": "prettier --write js css index.html smoke-test.html",
+    "fmt:check": "prettier --check js css index.html smoke-test.html"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0"
+  }
+}
