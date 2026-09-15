@@ -98,6 +98,38 @@ window.onload = function () {
           if (wrong2) wrong2.click();
           check("COUNT-wrong-no-star", g("CountGame.stars") === cs2);
 
+          /* Find Number — match same-color target pairs */
+          w.showScreen("findnum");
+          const fnBtns = [...d.querySelectorAll("#findnum-choices .choice")];
+          check("FINDNUM-board-min9", fnBtns.length >= 9);
+          const fnAnswer = g("FindNumGame.answer");
+          check("FINDNUM-target", parseInt(d.getElementById("findnum-target").textContent, 10) === fnAnswer);
+          check("FINDNUM-answer-in-choices", fnBtns.some(b => parseInt(b.textContent, 10) === fnAnswer));
+          const fns = g("FindNumGame.stars");
+          const fnFirst = fnBtns.find(b => parseInt(b.textContent, 10) === fnAnswer);
+          fnFirst.click();
+          check("FINDNUM-one-click-no-star", g("FindNumGame.stars") === fns);
+          fnFirst.click();
+          function matchAllFindNumPairs() {
+            const need = g("FindNumGame.need");
+            for (let p = 0; p < need; p++) {
+              const live = [...d.querySelectorAll("#findnum-choices .choice")].filter(b =>
+                parseInt(b.textContent, 10) === g("FindNumGame.answer") && !b.classList.contains("gone")
+              );
+              const by = {};
+              live.forEach(b => {
+                const c = b.style.background;
+                (by[c] = by[c] || []).push(b);
+              });
+              const pair = Object.values(by).find(arr => arr.length >= 2);
+              pair[0].click();
+              pair[1].click();
+            }
+          }
+          matchAllFindNumPairs();
+          fnBtns.forEach(b => b.click());
+          check("FINDNUM-star-single", g("FindNumGame.stars") === fns + 1);
+
           /* Home re-entry only shows once (no double init crash) */
           w.showScreen("home");
           w.showScreen("letters");
@@ -112,7 +144,7 @@ window.onload = function () {
             snd.click();
             check("SOUND-on", g("Sound.enabled") === true);
           }
-          check("HOME-4buttons", d.querySelectorAll("#screen-home [data-nav]").length === 4);
+          check("HOME-5buttons", d.querySelectorAll("#screen-home [data-nav]").length === 5);
         } catch (e) { results.push("EXCEPTION2 " + e.message + " @" + e.stack); }
         finish();
       }, 1600);

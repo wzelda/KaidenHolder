@@ -9,6 +9,7 @@ const SCREENS = {
   letters: () => ABCGame,
   numbers: () => NumbersGame,
   find: () => FindGame,
+  findnum: () => FindNumGame,
   count: () => CountGame
 };
 
@@ -30,6 +31,7 @@ function showScreen(name) {
     if (name === "letters") ABCGame.show(false);
     else if (name === "numbers") NumbersGame.show(false);
     else if (name === "find") FindGame.newRound();
+    else if (name === "findnum") FindNumGame.newRound();
     else if (name === "count") CountGame.newRound();
   }
   window.scrollTo(0, 0);
