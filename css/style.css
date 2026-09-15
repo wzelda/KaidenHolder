@@ -38,6 +38,7 @@ body {
 .btn-blue   { background:#66b8ff; }
 .btn-green  { background:#6fd98a; }
 .btn-orange { background:#ffb45e; }
+.btn-purple { background:#b58cff; }
 
 /* floating bubbles */
 .home-bubbles { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
@@ -156,6 +157,7 @@ body {
   box-shadow:0 10px 24px rgba(0,0,0,.1);
 }
 .count-hint { margin-top:8px; font-size:1.15rem; color:#7a8; font-weight:bold; }
+.findnum-name { margin-top:8px; font-size: clamp(1.4rem, 5vw, 2rem); color:#66b8ff; font-weight:bold; }
 .count-progress {
   margin-top:12px; font-size:1.6rem; font-weight:bold; color:#ff85b3;
 }

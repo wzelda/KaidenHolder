@@ -31,10 +31,12 @@ function el(id, cls = "") {
 }
 const ids = cls => [...els.keys()].filter(k => classes.get(k).has(cls));
 
-["screen-home", "screen-letters", "screen-numbers", "screen-find", "screen-count"].forEach(id => el(id, "screen"));
+["screen-home", "screen-letters", "screen-numbers", "screen-find", "screen-findnum", "screen-count"].forEach(id => el(id, "screen"));
 ["letter-upper", "letter-lower", "letter-emoji", "letter-word", "letter-prev", "letter-next", "letter-speak", "letter-card",
  "number-big", "number-name", "number-objects", "number-prev", "number-next", "number-speak", "number-card",
- "find-target", "find-choices", "find-stars", "count-objects", "count-choices", "count-progress", "count-stars", "celebrate"].forEach(id => el(id));
+ "find-target", "find-choices", "find-stars",
+ "findnum-target", "findnum-name", "findnum-choices", "findnum-progress", "findnum-stars",
+ "count-objects", "count-choices", "count-progress", "count-stars", "celebrate"].forEach(id => el(id));
 
 function freshNode() {
   const c = new Set();
@@ -71,7 +73,7 @@ const window = { scrollTo() {}, speechSynthesis };
 
 const files = [
   "js/data/letters.js", "js/data/numbers.js", "js/utils.js", "js/sound.js",
-  "js/games/abc.js", "js/games/number.js", "js/games/find.js", "js/games/count.js", "js/app.js"
+  "js/games/abc.js", "js/games/number.js", "js/games/find.js", "js/games/findnum.js", "js/games/count.js", "js/app.js"
 ];
 let src = files.map(f => fs.readFileSync(path.join(__dirname, f), "utf8")).join("\n");
 
@@ -84,6 +86,7 @@ src += "var speak = () => H.getSpeak(); var speakReset = () => H.resetSpeak();\n
 
 // wrap rounds counters
 src += "FindGame.rounds=0;(function(o){FindGame.newRound=function(){FindGame.rounds++;return o.call(FindGame);};})(FindGame.newRound);\n";
+src += "FindNumGame.rounds=0;(function(o){FindNumGame.newRound=function(){FindNumGame.rounds++;return o.call(FindNumGame);};})(FindNumGame.newRound);\n";
 src += "CountGame.rounds=0;(function(o){CountGame.newRound=function(){CountGame.rounds++;return o.call(CountGame);};})(CountGame.newRound);\n";
 
 src += "\nSound.init();\n";
@@ -123,6 +126,31 @@ src += "}\n";
 src += "matchAllCountPairs();\n";
 src += "H.children.get('count-choices').forEach(function(b){b.click();});\n";
 src += "ok('Bug2 count stars +1 after all pairs (locked)', CountGame.stars===s0+1 && CountGame.cleared===CountGame.need && CountGame._locked===true);\n";
+
+src += "speakReset(); showScreen('findnum');\n";
+src += "ok('findnum starts exactly 1 round on first entry', FindNumGame.rounds===1);\n";
+src += "ok('findnum speaks on first entry', speak()>0);\n";
+src += "var fnKids=H.children.get('findnum-choices');\n";
+src += "ok('findnum board has at least 9 tiles', fnKids.length>=9);\n";
+src += "ok('findnum target matches answer', parseInt(H.els.get('findnum-target').textContent,10)===FindNumGame.answer);\n";
+src += "var fns0=FindNumGame.stars; var fnAns=FindNumGame.answer;\n";
+src += "var fnOne=fnKids.find(b=>parseInt(b.textContent,10)===fnAns);\n";
+src += "fnOne.click();\n";
+src += "ok('findnum one click no star', FindNumGame.stars===fns0 && FindNumGame._locked===false && FindNumGame.cleared===0);\n";
+src += "fnOne.click();\n";
+src += "function matchAllFindNumPairs(){\n";
+src += "  var n=FindNumGame.need;\n";
+src += "  for(var p=0;p<n;p++){\n";
+src += "    var live=H.children.get('findnum-choices').filter(function(b){return parseInt(b.textContent,10)===FindNumGame.answer && !b.classList.contains('gone');});\n";
+src += "    var by={};\n";
+src += "    live.forEach(function(b){ var c=b.style.background; (by[c]=by[c]||[]).push(b); });\n";
+src += "    var pair=Object.keys(by).map(function(k){return by[k];}).find(function(a){return a.length>=2;});\n";
+src += "    pair[0].click(); pair[1].click();\n";
+src += "  }\n";
+src += "}\n";
+src += "matchAllFindNumPairs();\n";
+src += "H.children.get('findnum-choices').forEach(function(b){b.click();});\n";
+src += "ok('findnum stars +1 after all pairs (locked)', FindNumGame.stars===fns0+1 && FindNumGame.cleared===FindNumGame.need && FindNumGame._locked===true);\n";
 
 src += "showScreen('find');\n";
 src += "var t2=H.els.get('find-target').textContent; var wbtn=boxBtn('find-choices',b=>b.textContent!==t2);\n";

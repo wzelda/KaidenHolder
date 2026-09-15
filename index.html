@@ -18,6 +18,7 @@
       <button class="big-btn btn-pink" data-nav="letters">🔤<span>ABC</span></button>
       <button class="big-btn btn-blue" data-nav="numbers">🔢<span>123</span></button>
       <button class="big-btn btn-green" data-nav="find">🔍<span>Find Letter</span></button>
+      <button class="big-btn btn-purple" data-nav="findnum">🎯<span>Find Number</span></button>
       <button class="big-btn btn-orange" data-nav="count">🍎<span>Counting</span></button>
     </div>
   </section>
@@ -67,6 +68,19 @@
     <div class="stars" id="find-stars">⭐ 0</div>
   </section>
 
+  <!-- ============ FIND NUMBER ============ -->
+  <section id="screen-findnum" class="screen">
+    <button class="home-btn" data-nav="home">🏠</button>
+    <button class="sound-btn" id="sound-toggle-findnum" title="Sound on/off">🔊</button>
+    <h2 class="screen-title">Find the Number!</h2>
+    <p class="count-hint">Tap 2 same color!</p>
+    <div class="find-target" id="findnum-target">1</div>
+    <div class="findnum-name" id="findnum-name">One</div>
+    <div class="count-progress" id="findnum-progress">0 / 1</div>
+    <div class="choices count-grid" id="findnum-choices"></div>
+    <div class="stars" id="findnum-stars">⭐ 0</div>
+  </section>
+
   <!-- ============ COUNTING GAME ============ -->
   <section id="screen-count" class="screen">
     <button class="home-btn" data-nav="home">🏠</button>
@@ -90,6 +104,7 @@
 <script src="js/games/abc.js"></script>
 <script src="js/games/number.js"></script>
 <script src="js/games/find.js"></script>
+<script src="js/games/findnum.js"></script>
 <script src="js/games/count.js"></script>
 <script src="js/app.js"></script>
 </body>
